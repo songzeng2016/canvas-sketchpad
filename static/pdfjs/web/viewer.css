@@ -13,6 +13,23 @@
  * limitations under the License.
  */
 
+.bubbleLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.bubbleLayer .bubbleBox {
+  position: absolute;
+  top: 100px;
+  left: 200px;
+  width: 30px;
+  height: 30px;
+  background: #55a532;
+  cursor: pointer;
+}
+
 .textLayer {
   position: absolute;
   left: 0;

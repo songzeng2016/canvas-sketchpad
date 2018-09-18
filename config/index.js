@@ -10,7 +10,23 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api': {
+        target: 'http://192.168.1.108:8899', // sx
+        // target: 'http://192.168.1.106:8899', // yyh
+        // target: 'http://192.168.1.112:8899', // xb
+        // target: 'http://192.168.1.228', // 228
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/api' // 规则, 见下面说明
+        },
+        headers: {
+          // 'csname': 'songxiao',
+          // 'cspassword': '96e79218965eb72c92a549dd5a330112',
+          // 'Cookie': 'SID=810q3nmoi5mfp8geb9bkm9jql0;' //这里可以设置cookies, 也可以不设置
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

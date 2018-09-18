@@ -6351,6 +6351,7 @@ var PDFPageView = function () {
     this.zoomLayer = null;
     var div = document.createElement('div');
     div.className = 'page';
+    div.id = 'pageContainer' + this.id;
     div.style.width = Math.floor(this.viewport.width) + 'px';
     div.style.height = Math.floor(this.viewport.height) + 'px';
     div.setAttribute('data-page-number', this.id);
@@ -6587,6 +6588,26 @@ var PDFPageView = function () {
       } else {
         div.appendChild(canvasWrapper);
       }
+
+      // 增加气泡层
+      // var bubbleLayer = null;
+      if (true) {
+        var bubbleLayerDiv = document.createElement('div');
+        bubbleLayerDiv.className = 'bubbleLayer';
+        bubbleLayerDiv.style.width = canvasWrapper.style.width;
+        bubbleLayerDiv.style.height = 0;
+        if (this.annotationLayer && this.annotationLayer.div) {
+          div.insertBefore(bubbleLayerDiv, this.annotationLayer.div);
+        } else {
+          div.appendChild(bubbleLayerDiv);
+        }
+
+        window.parent.renderBubble(this.id);
+        console.log(this.id);
+        // bubbleLayer = this.bubbleLayerFactory.createBubbleLayerBuilder(bubbleLayerDiv);
+      }
+      // this.bubbleLayer = bubbleLayer;
+
       var textLayer = null;
       if (this.textLayerFactory) {
         var textLayerDiv = document.createElement('div');

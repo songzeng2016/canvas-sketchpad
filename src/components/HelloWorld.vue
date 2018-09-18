@@ -79,6 +79,11 @@
 
 <script>
   import html2canvas from 'html2canvas';
+  import axios from 'axios';
+  import qs from 'qs';
+
+  import Vue from 'vue';
+  import bubble from 'components/bubble';
 
   const toolList = ['square', 'circular', 'arrow', 'brush', 'font', 'undo', 'close', 'check'];
   const colorList = ['#000000', '#ff0000', '#0dc8bd', '#b9b9b9', '#59c1eb', '#ebd135', '#ebac32', '#63d400',
@@ -120,11 +125,21 @@
         src: 'viewer.html/http://www.zhuyun365.com/file/2018-08-28/18087014-a2c8-4de2-8b1a-4ea75f7728f6_9246_1535438712777.pdf'
       };
     },
+    created() {
+      // axios.post('/api/user/login', qs.stringify({
+      //   username: 'sz',
+      //   password: '96e79218965eb72c92a549dd5a330112',
+      //   clienttype: 'web',
+      // })).then(json => {
+      //
+      // });
+      window.renderBubble = this.renderBubble;
+    },
     mounted() {
-      // const canvas = document.getElementById('canvas');
-      // // 设置 canvas 宽高
-      // canvas.width = this.width;
-      // canvas.height = this.height;
+
+    },
+    destroyed() {
+      window.renderBubble = null;
     },
     computed: {
       // 计算大小与位置
@@ -185,6 +200,27 @@
       },
     },
     methods: {
+      // 渲染气泡
+      renderBubble(id) {
+        let iframe;
+        if (document.frames) {  // IE
+          iframe = document.frames['iframe'];
+        } else {
+          iframe = document.getElementById('iframe').contentWindow;
+        }
+
+        let pageContainerNode = iframe.document.getElementById('pageContainer' + id);
+        let bubbleLayerNode = pageContainerNode.getElementsByClassName('bubbleLayer')[0];
+
+        let div = document.createElement('div');
+        div.className = 'bubbleBox';
+        // console.log(bubble);
+
+        const template = `<div class="bubbleBox" @click="bubbleClick(id)"></div>`;
+        const render = Vue.compile(template).render;
+
+        bubbleLayerNode.appendChild(div);
+      },
       // 设置选择面板位置
       setBoardPosition() {
         const boardWidth = 323;
@@ -214,6 +250,7 @@
       },
       // 完成截图
       drawOver() {
+        const canvas = document.getElementById('canvas');
         let iframe;
         if (document.frames) {  // IE
           iframe = document.frames['iframe'];
@@ -232,12 +269,23 @@
           h: this.height,
           width: parseInt(document.documentElement.clientWidth),
           height: parseInt(document.documentElement.clientHeight),
+          path: '',
           scrollY: topOffset,
           scrollX: leftOffset,
           zoom: zoom,
-          page_no: parseInt(iframe.document.getElementById('pageNumber').value),
+          pageNo: parseInt(iframe.document.getElementById('pageNumber').value),
+          timeout: '',
+          imgStr: canvas.toDataURL(),
+          location: 'http://192.168.1.228/file/2018-09-04/c24237dc-2fce-42a5-a888-c8c42d3e57b8_4589_1536042539661.pdf',
+          url: 'http://www.czloud.com/screen/getshot/v1/',
+          currentW: '',
+          currentH: '',
         };
         console.log(getData);
+
+        axios.post('api/extResource/getgraphic', qs.stringify(getData)).then(json => {
+
+        });
       },
       // 开始截图
       startDrawing() {
